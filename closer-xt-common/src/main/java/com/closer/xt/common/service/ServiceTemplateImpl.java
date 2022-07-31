@@ -2,7 +2,6 @@ package com.closer.xt.common.service;
 
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;

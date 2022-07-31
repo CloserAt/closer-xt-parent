@@ -11,9 +11,52 @@
 
     <artifactId>closer-xt-admin</artifactId>
 
+    <packaging>pom</packaging>
+    <modules>
+        <module>closer-xt-admin-api</module>
+        <module>closer-xt-admin-dao</module>
+        <module>closer-xt-admin-domain</module>
+        <module>closer-xt-admin-model</module>
+        <module>closer-xt-admin-service</module>
+        <module>closer-xt-admin-service-impl</module>
+    </modules>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-admin-service-impl</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-admin-service</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-admin-model</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-admin-domain</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-admin-dao</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

@@ -20,8 +20,44 @@
         <module>closer-xt-sso-service-impl</module>
         <module>closer-xt-sso-model</module>
         <module>closer-xt-sso-dao</module>
-        <module>closer-xt-sso-domin</module>
+        <module>closer-xt-sso-domain</module>
+        <module>closer-xt-sso-domain</module>
+        <module>closer-xt-sso-api</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-sso-service-impl</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-sso-service</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-sso-model</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-sso-domain</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-sso-dao</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

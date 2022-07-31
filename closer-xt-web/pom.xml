@@ -6,14 +6,58 @@
         <artifactId>closer-xt-parent</artifactId>
         <groupId>com.hj.xt</groupId>
         <version>1.0-SNAPSHOT</version>
+
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>pom</packaging>
+    <modules>
+        <module>closer-xt-web-api</module>
+        <module>closer-xt-web-dao</module>
+        <module>closer-xt-web-domain</module>
+        <module>closer-xt-web-model</module>
+        <module>closer-xt-web-service</module>
+        <module>closer-xt-web-service-impl</module>
+    </modules>
     <artifactId>closer-xt-web</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-web-service-impl</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-web-service</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-web-model</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-web-domain</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-web-dao</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hj.xt</groupId>
+                <artifactId>closer-xt-common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

@@ -13,6 +13,9 @@
         <module>closer-xt-web</module>
         <module>closer-xt-admin</module>
         <module>closer-xt-common-pojo</module>
+        <module>closer-xt-web-service</module>
+        <module>closer-xt-web</module>
+        <module>closer-xt-admin</module>
     </modules>
 
     <parent>
