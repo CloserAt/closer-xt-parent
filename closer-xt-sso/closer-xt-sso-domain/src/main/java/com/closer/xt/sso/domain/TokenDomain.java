@@ -1,6 +1,6 @@
 package com.closer.xt.sso.domain;
 
-import com.closer.xt.common.Utils.JWTUtils;
+import com.closer.xt.common.utils.JWTUtils;
 import com.closer.xt.common.constant.RedisKey;
 import com.closer.xt.sso.domain.repository.TokenDomainRepository;
 import lombok.extern.slf4j.Slf4j;

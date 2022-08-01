@@ -1,4 +1,4 @@
-package com.closer.xt.common.Utils;
+package com.closer.xt.common.utils;
 
 import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.*;

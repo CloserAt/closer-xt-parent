@@ -5,13 +5,18 @@ import com.closer.xt.admin.domain.repository.NewsDomainRepository;
 import com.closer.xt.admin.model.ListPageModel;
 import com.closer.xt.admin.model.NewsModel;
 import com.closer.xt.admin.params.NewsParams;
+import com.closer.xt.common.utils.QiniuUtils;
+import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
 import com.closer.xt.pojo.News;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class NewsDomain {
     private NewsDomainRepository newsDomainRepository;
@@ -87,5 +92,18 @@ public class NewsDomain {
         Long id = newsParams.getId();
         this.newsDomainRepository.delete(id);
         return CallResult.success();
+    }
+
+    public CallResult upload(MultipartFile file) {
+        //原始文件名称
+        String originalFilename = file.getOriginalFilename();
+        //切割得到后缀后，再加上随机字符串得到唯一文件名称
+        String fileName = UUID.randomUUID().toString() + "." + StringUtils.substringAfterLast(originalFilename, ".");
+        //上传文件上传至七牛云服务器
+        boolean upload = this.newsDomainRepository.qiniuUtils.upload(file, fileName);
+        if (upload) {
+            return CallResult.success(QiniuUtils.url + fileName);
+        }
+        return CallResult.fail(BusinessCodeEnum.UPLOAD_FAIL.getCode(),BusinessCodeEnum.UPLOAD_FAIL.getMsg());
     }
 }

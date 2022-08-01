@@ -5,6 +5,7 @@ import com.closer.xt.admin.service.NewsService;
 import com.closer.xt.common.model.CallResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("news")
@@ -47,5 +48,10 @@ public class NewsController {
     @PostMapping("delete")
     public CallResult delete(@RequestBody NewsParams newsParams) {
         return newsService.delete(newsParams);
+    }
+
+    @PostMapping("upload")
+    public CallResult upload(@RequestParam("imageFile")MultipartFile file) {
+        return newsService.upload(file);
     }
 }

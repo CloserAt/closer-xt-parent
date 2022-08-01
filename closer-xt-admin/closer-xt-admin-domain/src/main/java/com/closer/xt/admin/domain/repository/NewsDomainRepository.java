@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.closer.xt.admin.dao.NewsMapper;
 import com.closer.xt.admin.domain.NewsDomain;
 import com.closer.xt.admin.domain.qiniuyun.QiniuConfig;
+import com.closer.xt.admin.domain.qiniuyun.QiniuUtils;
 import com.closer.xt.admin.params.NewsParams;
 import com.closer.xt.pojo.News;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NewsDomainRepository {
+    @Autowired
+    public QiniuUtils qiniuUtils;
+
     @Autowired
     public QiniuConfig qiniuConfig;
 

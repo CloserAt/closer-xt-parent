@@ -9,6 +9,7 @@ import com.closer.xt.common.service.AbstractTemplateAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class NewsServiceImpl extends AbstractService implements NewsService {
@@ -69,5 +70,11 @@ public class NewsServiceImpl extends AbstractService implements NewsService {
                 return newsDomain.delete(newsParams);
             }
         });
+    }
+
+    @Override
+    public CallResult upload(MultipartFile file) {
+        NewsDomain newsDomain = newsDomainRepository.createDomain(new NewsParams());
+        return newsDomain.upload(file);
     }
 }

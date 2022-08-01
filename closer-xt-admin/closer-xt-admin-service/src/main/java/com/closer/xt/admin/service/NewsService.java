@@ -2,6 +2,7 @@ package com.closer.xt.admin.service;
 
 import com.closer.xt.admin.params.NewsParams;
 import com.closer.xt.common.model.CallResult;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface NewsService {
     CallResult findPage(NewsParams newsParams);
@@ -33,4 +34,11 @@ public interface NewsService {
      * @return
      */
     CallResult delete(NewsParams newsParams);
+
+    /**
+     * 七牛云图片上传
+     * @param file
+     * @return
+     */
+    CallResult upload(MultipartFile file);
 }

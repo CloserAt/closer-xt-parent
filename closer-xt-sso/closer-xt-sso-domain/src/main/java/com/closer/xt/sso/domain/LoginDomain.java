@@ -1,6 +1,6 @@
 package com.closer.xt.sso.domain;
 
-import com.closer.xt.common.Utils.JWTUtils;
+import com.closer.xt.common.utils.JWTUtils;
 import com.closer.xt.common.constant.RedisKey;
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
