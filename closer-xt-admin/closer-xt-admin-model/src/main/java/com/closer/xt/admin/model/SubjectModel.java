@@ -2,6 +2,8 @@ package com.closer.xt.admin.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class SubjectModel {
     private Long id;
@@ -9,6 +11,8 @@ public class SubjectModel {
     private String subjectGrade;
     private String subjectTerm;
     private Integer status;
+
+    private List<Integer> subjectUnits;
 
     public  void fillSubjectName() {
         this.subjectName = this.subjectName + "-" + this.subjectGrade + "-" + this.subjectTerm;

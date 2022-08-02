@@ -16,4 +16,24 @@ public class SubjectController {
     public CallResult findPage(@RequestBody SubjectParams subjectParams) {
         return subjectService.findPage(subjectParams);
     }
+
+    @PostMapping("saveSubject")
+    public CallResult saveSubject(@RequestBody SubjectParams subjectParams) {
+        return subjectService.saveSubject(subjectParams);
+    }
+
+    @PostMapping("findSubjectById")//编辑前需要找到数据回显到页面
+    public CallResult findSubjectById(@RequestBody SubjectParams subjectParams) {
+        return subjectService.findSubjectById(subjectParams);
+    }
+
+    @PostMapping("updateSubject")
+    public CallResult updateSubject(@RequestBody SubjectParams subjectParams) {
+        return subjectService.updateSubject(subjectParams);
+    }
+
+    @PostMapping("allSubjectList")
+    public CallResult allSubjectList(@RequestBody SubjectParams subjectParams) {
+        return subjectService.allSubjectList(subjectParams);
+    }
 }

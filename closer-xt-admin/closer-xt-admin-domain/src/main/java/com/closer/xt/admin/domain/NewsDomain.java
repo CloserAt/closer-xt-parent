@@ -2,9 +2,11 @@ package com.closer.xt.admin.domain;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.closer.xt.admin.domain.repository.NewsDomainRepository;
+import com.closer.xt.admin.domain.repository.TopicDomainRepository;
 import com.closer.xt.admin.model.ListPageModel;
 import com.closer.xt.admin.model.NewsModel;
 import com.closer.xt.admin.params.NewsParams;
+import com.closer.xt.admin.params.TopicParams;
 import com.closer.xt.common.utils.QiniuUtils;
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
@@ -24,6 +26,10 @@ public class NewsDomain {
     public NewsDomain(NewsDomainRepository newsDomainRepository, NewsParams newsParams) {
         this.newsDomainRepository = newsDomainRepository;
         this.newsParams = newsParams;
+    }
+
+    public NewsDomain(TopicDomainRepository topicDomainRepository, TopicParams topicParams) {
+
     }
 
     public CallResult<Object> findNewsPage() {
