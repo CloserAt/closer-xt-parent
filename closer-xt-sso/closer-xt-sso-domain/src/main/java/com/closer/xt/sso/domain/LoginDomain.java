@@ -55,7 +55,7 @@ public class LoginDomain {
             //0.redistemplate检查refreshToken是否存在，存在就直接获取accessToken，无需重新授权
             //refreshToken只有在登录状态下才能有效
             //refreshToken无法应用于用户登陆，刷新token来加快访问，只能用于拿到登陆用户信息的场景
-            //String refreshToken = loginDomainRepository.stringRedisTemplate.opsForValue().get(RedisKey.WX_REFRESHTOKEN_KEY);
+            //String refreshToken = loginDomainRepository.stringRedisTemplate.opsForValue().get(RedisKey.REFRESH_TOKEN);
             String refreshToken = null;
             WxMpOAuth2AccessToken wxMpOAuth2AccessToken = null;
             if (refreshToken == null) {
@@ -64,10 +64,10 @@ public class LoginDomain {
                 refreshToken = wxMpOAuth2AccessToken.getRefreshToken();
                 String unionId = wxMpOAuth2AccessToken.getUnionId();//bug修复：给refreshToken标识上唯一的id,防止所有用户公用一个refreshToken
                 //refreshToken,需要保存到redis当中，过期时间设置为28天
-                loginDomainRepository.stringRedisTemplate.opsForValue().set(RedisKey.WX_REFRESHTOKEN_KEY + unionId, refreshToken, 28, TimeUnit.DAYS);
+                loginDomainRepository.stringRedisTemplate.opsForValue().set(RedisKey.REFRESH_TOKEN + unionId, refreshToken, 28, TimeUnit.DAYS);
             } else {
                 //2.下次登陆得refreshToken存在，则直接获取accessToken，不需要用户重新授权
-                wxMpOAuth2AccessToken = loginDomainRepository.wxMpService.oauth2getAccessToken(refreshToken);
+                wxMpOAuth2AccessToken = loginDomainRepository.wxMpService.oauth2refreshAccessToken(refreshToken);
             }
             //3.通过accessToken获取微信用户信息（openid, unionId）unionId在web端，公众号端，手机是唯一得
             WxMpUser wxMpUser = loginDomainRepository.wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, "zh_CN");
@@ -77,7 +77,7 @@ public class LoginDomain {
             boolean isNew = false;
             if (user == null) {
                 //不存在就注册
-                long currentTimeMillis = System.currentTimeMillis();
+                Long currentTimeMillis = System.currentTimeMillis();
                 user = new User();
                 user.setNickname(wxMpUser.getNickname());
                 user.setHeadImageUrl(wxMpUser.getHeadImgUrl());
@@ -100,14 +100,17 @@ public class LoginDomain {
             }
             //5.使用jwt技术生成token,需要把token存储起来
             String token = JWTUtils.createJWT(7 * 24 * 60 * 60 * 1000, user.getId(), secretKey);
+            log.info("生成的token是："+token);
+            log.info("userId是："+user.getId());
             loginDomainRepository.stringRedisTemplate.opsForValue().set(RedisKey.TOKEN + token,String.valueOf(user.getId()),7,TimeUnit.DAYS);
+
             //6.假设用户只能在一个端进行登陆，其他端再登陆直接踢下线
-            String oldToken = loginDomainRepository.stringRedisTemplate.opsForValue().get(RedisKey.LOGIN_USER_TOKEN + user.getId());
-            if (oldToken != null) {
-                //说明登陆过了
-                //在用户进行登陆验证时，需要先验证token是否合法，然后去redis查询是否存在token 不存在就代表不合法
-                loginDomainRepository.stringRedisTemplate.delete(RedisKey.TOKEN + token);
-            }
+//            String oldToken = loginDomainRepository.stringRedisTemplate.opsForValue().get(RedisKey.LOGIN_USER_TOKEN + user.getId());
+//            if (oldToken != null) {
+//                //说明登陆过了
+//                //在用户进行登陆验证时，需要先验证token是否合法，然后去redis查询是否存在token 不存在就代表不合法
+//                loginDomainRepository.stringRedisTemplate.delete(RedisKey.TOKEN + token);
+//            }
             loginDomainRepository.stringRedisTemplate.opsForValue().set(RedisKey.LOGIN_USER_TOKEN + user.getId(), token);
             //7.返回给前端token,存在cookie当中，下次请求时从cookie中获取token
             HttpServletResponse response = loginParams.getResponse();
@@ -115,7 +118,7 @@ public class LoginDomain {
             cookie.setMaxAge(8*24*3600);
             cookie.setPath("/");
             response.addCookie(cookie);
-            log.info(String.valueOf(cookie));
+            log.info("cookie是："+String.valueOf(cookie));
             //8.拓展功能（用户积分，成就，任务）
             //9.记录日志，记录当前用户得登陆行为:MQ+MongoDB
             //10.更新用户得最后登陆时间

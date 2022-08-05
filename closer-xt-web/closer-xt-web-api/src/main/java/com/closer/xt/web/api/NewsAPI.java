@@ -18,13 +18,13 @@ public class NewsAPI {
     private NewsService newsService;
 
     @PostMapping("newsList")
-    @Cache(name = "newsList", time = 2*60)
+    //@Cache(name = "newsList", time = 2*60)
     public CallResult newsList(@RequestBody NewsParams newsParams) {
         return newsService.newsList(newsParams);
     }
 
     @PostMapping("detail")
-    @Cache(name = "newsDetail", time = 30)
+    //@Cache(name = "newsDetail", time = 30)
     public CallResult news(@RequestBody NewsParams newsParams) {
         return newsService.newsById(newsParams);
     }

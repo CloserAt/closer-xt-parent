@@ -1,4 +1,4 @@
-package com.closer.xt.sso.handler;
+package com.closer.xt.web.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.closer.xt.common.Login.UserThreadLocal;
@@ -7,6 +7,7 @@ import com.closer.xt.common.model.CallResult;
 import com.closer.xt.sso.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,7 +21,7 @@ import java.io.PrintWriter;
 @Component
 @Slf4j
 //登录拦截器，所有需要登陆才能访问得资源，未登录都会被拦截
-public class  LoginInterceptor implements HandlerInterceptor {
+public class LoginInterceptor implements HandlerInterceptor {
     //从cookie中拿到对应得token
     //根据token去做对应得认证，通过即可拿到userID
     //通过ThreadLocal将UserId放入其中，后续得接口都可以通过threadLocal方便得拿到用户id
@@ -28,8 +29,9 @@ public class  LoginInterceptor implements HandlerInterceptor {
     //请求完成之后，ThreadLocal随着线程销毁
     //相比于redis:节省内存； 从redis获取信息，就需要连接网络，开销较大
 
-
-    @Autowired
+    //使用dubbo提供的服务
+    //服务提供方提供的版本是1.0.0
+    @DubboReference(version = "1.0.0")//该注解的作用是通过注册中心，去拿提供方的地址，并进行网络调用（TCP，netty,hession），会将参数进行序列化传输，返回值进行反序列化处理
     private TokenService tokenService;
 
     @Override
@@ -59,14 +61,12 @@ public class  LoginInterceptor implements HandlerInterceptor {
         }
 
         //2.根据token去做对应得认证，通过即可拿到userID
-        String userId = String.valueOf(tokenService.checkToken(token));
-        log.info("userId是：" + userId);
+        Long userId = tokenService.checkToken(token);
         if (userId == null) {
             returnJson(response);
             return false;
         }
-
-        UserThreadLocal.put(Long.valueOf(userId));
+        UserThreadLocal.put(userId);
         return true;
     }
 

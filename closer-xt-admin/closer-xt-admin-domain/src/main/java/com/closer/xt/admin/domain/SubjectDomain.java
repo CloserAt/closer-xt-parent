@@ -3,18 +3,14 @@ package com.closer.xt.admin.domain;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.closer.xt.admin.domain.repository.SubjectDomainRepository;
 import com.closer.xt.admin.model.ListPageModel;
-import com.closer.xt.admin.model.NewsModel;
 import com.closer.xt.admin.model.SubjectModel;
 import com.closer.xt.admin.params.SubjectParams;
 import com.closer.xt.common.enums.Status;
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
-import com.closer.xt.pojo.News;
 import com.closer.xt.pojo.Subject;
-import com.closer.xt.pojo.SubjectUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -63,6 +59,18 @@ public class SubjectDomain {
         return subjectModelList;
     }
 
+    public CallResult<Object> checkSaveSubjectParam() {
+        String subjectName = this.subjectParams.getSubjectName();
+        String subjectGrade = this.subjectParams.getSubjectGrade();
+        String subjectTerm = this.subjectParams.getSubjectTerm();
+        if (StringUtils.isBlank(subjectName)
+                || StringUtils.isBlank(subjectGrade)
+                || StringUtils.isBlank(subjectTerm)) {
+            return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(), "参数不能为空");
+        }
+        return CallResult.success();
+    }
+
     public CallResult<Object> checkSaveSubjectBiz(SubjectParams subjectParams) {
         String subjectName = this.subjectParams.getSubjectName();
         String subjectGrade = this.subjectParams.getSubjectGrade();
@@ -87,17 +95,7 @@ public class SubjectDomain {
         return CallResult.success();
     }
 
-    public CallResult<Object> checkSaveSubjectParam() {
-        String subjectName = this.subjectParams.getSubjectName();
-        String subjectGrade = this.subjectParams.getSubjectGrade();
-        String subjectTerm = this.subjectParams.getSubjectTerm();
-        if (StringUtils.isBlank(subjectName)
-            || StringUtils.isBlank(subjectGrade)
-            || StringUtils.isBlank(subjectTerm)) {
-            return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(), "参数不能为空");
-        }
-        return CallResult.success();
-    }
+
 
     public CallResult<Object> findSubjectById(SubjectParams subjectParams) {
         /*

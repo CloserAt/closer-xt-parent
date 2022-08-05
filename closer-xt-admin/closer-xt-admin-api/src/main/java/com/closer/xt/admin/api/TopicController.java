@@ -1,8 +1,6 @@
 package com.closer.xt.admin.api;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONAware;
-import com.closer.xt.admin.model.TopicModel;
 import com.closer.xt.admin.params.TopicParams;
 import com.closer.xt.admin.service.TopicService;
 import com.closer.xt.common.enums.TopicType;
@@ -13,7 +11,6 @@ import com.closer.xt.pojo.Topic;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

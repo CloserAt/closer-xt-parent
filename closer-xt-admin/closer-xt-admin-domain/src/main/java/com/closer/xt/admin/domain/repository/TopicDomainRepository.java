@@ -36,6 +36,7 @@ public class TopicDomainRepository {
         }
         return topicMapper.selectPage(topicPage,queryWrapper);
     }
+
     public SubjectDomain createSubjectDomain(SubjectParams subjectParams) {
         return subjectDomainRepository.createDomain(subjectParams);
     }

@@ -3,7 +3,6 @@ package com.closer.xt.sso.api;
 import com.closer.xt.common.model.CallResult;
 import com.closer.xt.sso.model.params.LoginParams;
 import com.closer.xt.sso.service.LoginService;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +30,8 @@ public class LoginApi {
     @GetMapping("wxLoginCallBack")
     public String wxLoginCallBack(HttpServletRequest request,
                                   HttpServletResponse response,
-                                  String code, String state) {
+                                  String code,
+                                  String state) {
         //为了service层统一，所有的api层的参数处理 ，都放入loginParams中
         LoginParams loginParams = new LoginParams();
         loginParams.setCode(code);

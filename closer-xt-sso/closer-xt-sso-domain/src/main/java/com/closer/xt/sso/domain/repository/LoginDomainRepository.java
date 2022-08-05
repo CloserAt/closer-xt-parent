@@ -46,8 +46,6 @@ public class LoginDomainRepository {
     }
 
     public String buildQrUrl() {
-
-
         //生成state参数方式1，用于防范csrf
 //        String csrfKey = wxOpenConfig.getCsrfKey();
 //        String time = new DateTime().toString("yyyyMMddHHmmss");
