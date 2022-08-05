@@ -39,4 +39,19 @@ public class TopicDomainRepository {
     public SubjectDomain createSubjectDomain(SubjectParams subjectParams) {
         return subjectDomainRepository.createDomain(subjectParams);
     }
+
+    public Topic findTopicByTitle(String topicTitle) {
+        LambdaQueryWrapper<Topic> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Topic::getTopicTitle,topicTitle);
+        queryWrapper.last("limit 1");
+        return topicMapper.selectOne(queryWrapper);
+    }
+
+    public void updateTopic(Topic topic) {
+        this.topicMapper.updateById(topic);
+    }
+
+    public void saveTopic(Topic topic) {
+        this.topicMapper.insert(topic);
+    }
 }

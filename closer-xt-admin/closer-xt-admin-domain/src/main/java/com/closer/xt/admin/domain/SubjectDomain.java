@@ -12,13 +12,16 @@ import com.closer.xt.common.model.CallResult;
 import com.closer.xt.pojo.News;
 import com.closer.xt.pojo.Subject;
 import com.closer.xt.pojo.SubjectUnit;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class SubjectDomain {
     private SubjectDomainRepository subjectDomainRepository;
     private SubjectParams subjectParams;
@@ -29,9 +32,9 @@ public class SubjectDomain {
 
 
     public CallResult<Object> findSubjectPage(SubjectParams subjectParams) {
-        int currentPage = this.subjectParams.getCurrentPage();
-        int pageSize = this.subjectParams.getPageSize();
-        String queryString = this.subjectParams.getQueryString();
+        int currentPage = subjectParams.getCurrentPage();
+        int pageSize = subjectParams.getPageSize();
+        String queryString = subjectParams.getQueryString();
         //mybatisplus的page对象
         Page<Subject> subjectPage = this.subjectDomainRepository.findSubjectPageByCondition(currentPage, pageSize, queryString);
 
@@ -41,9 +44,10 @@ public class SubjectDomain {
 
         //将学科名称的信息拼接上-学科年级-学科学期
         List<SubjectModel> list = copyList(records);
-        list.forEach(SubjectModel::fillSubjectName);//lamda表达式法
+        list.forEach(SubjectModel::fillSubjectName);//lambda表达式法
 
         listPageModel.setList(list);
+        log.info("总数据数："+subjectPage.getTotal());
         listPageModel.setSize(subjectPage.getTotal());//Total代表总条目数
         return CallResult.success(listPageModel);
     }
@@ -157,5 +161,20 @@ public class SubjectDomain {
 
     public List<Subject> findAllSubjectList() {
         return this.subjectDomainRepository.findAll(this.subjectParams);
+    }
+
+    public List<Subject> findSubjectListByCourseId(Long courseId) {
+
+        return this.subjectDomainRepository.findSubjectListByCourseId(courseId);
+    }
+
+    public List<SubjectModel> allSubjectModelList() {
+        List<Subject> all = subjectDomainRepository.findAll(subjectParams);
+        return copyList(all);
+    }
+
+    public List<String> allSubjectIdList() {
+        List<Subject> all = this.subjectDomainRepository.findAll(subjectParams);
+        return all.stream().map(subject -> subject.getId().toString()).collect(Collectors.toList());
     }
 }

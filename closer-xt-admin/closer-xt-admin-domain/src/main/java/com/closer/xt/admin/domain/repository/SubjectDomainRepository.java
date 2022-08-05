@@ -7,6 +7,7 @@ import com.closer.xt.admin.dao.SubjectUnitMapper;
 import com.closer.xt.admin.domain.NewsDomain;
 import com.closer.xt.admin.domain.SubjectDomain;
 import com.closer.xt.admin.domain.qiniuyun.QiniuConfig;
+import com.closer.xt.admin.model.SubjectModel;
 import com.closer.xt.admin.params.NewsParams;
 import com.closer.xt.admin.params.SubjectParams;
 import com.closer.xt.common.model.CallResult;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,7 @@ public class SubjectDomainRepository {
     @Autowired
     private SubjectMapper subjectMapper;
 
-    @Autowired
+    @Resource
     private SubjectUnitMapper subjectUnitMapper;
 
     public SubjectDomain createDomain(SubjectParams subjectParams) {
@@ -89,5 +91,9 @@ public class SubjectDomainRepository {
 
     public List<Subject> findAll(SubjectParams subjectParams) {
         return subjectMapper.selectList(new LambdaQueryWrapper<>());
+    }
+
+    public List<Subject> findSubjectListByCourseId(Long courseId) {
+        return this.subjectMapper.findSubjectListByCourseId(courseId);
     }
 }

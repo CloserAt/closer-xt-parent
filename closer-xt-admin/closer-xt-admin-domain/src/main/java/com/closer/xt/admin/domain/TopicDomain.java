@@ -81,4 +81,18 @@ public class TopicDomain {
         }
     }
 
+    public CallResult<Topic> findTopicByTitle(String topicTitle) {
+        Topic topic  =  this.topicDomainRepository.findTopicByTitle(topicTitle);
+        return CallResult.success(topic);
+    }
+
+    public CallResult<Object> updateTopic(Topic topic) {
+        this.topicDomainRepository.updateTopic(topic);
+        return CallResult.success();
+    }
+
+    public CallResult<Object> savaTopic(Topic topic) {
+        this.topicDomainRepository.saveTopic(topic);
+        return CallResult.success();
+    }
 }
