@@ -8,24 +8,23 @@ import java.util.List;
 
 @Data
 public class ListPageModel<T> implements Serializable {
+    private long pageCount;
 
- private long pageCount;
+    private int page;
 
- private int page;
+    private int pageSize;
 
- private int pageSize;
+    private long size;
 
- private long size;
+    private List<T> list;
 
- private List<T> list;
+    public ListPageModel<T> initNull() {
+        ListPageModel<T> listModel = new ListPageModel<>();
+        listModel.setList(new ArrayList<>());
+        listModel.setPage(1);
+        listModel.setPageCount(1);
+        listModel.setSize(0);
+        return listModel;
+    }
 
-
- public ListPageModel<T> initNull() {
-  ListPageModel<T> listModel = new ListPageModel<T>();
-  listModel.setList(new ArrayList<T>());
-  listModel.setPage(1);
-  listModel.setPageCount(1);
-  listModel.setSize(0);
-  return listModel;
- }
 }

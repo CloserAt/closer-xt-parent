@@ -9,14 +9,20 @@ import java.lang.annotation.*;
 @Documented
 public @interface Cache {
     /**
+     * 过期时间 默认60s
+     * @return
+     */
+    long time() default 1 * 60 * 1000;
+
+    /**
      * 缓存前缀名称
      * @return
      */
     String name() default "";
 
     /**
-     * 过期时间 默认60s
+     * 是否需要当前的用户作为key的一部分
      * @return
      */
-    int time() default 60;
+    boolean hasUser() default false;
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.closer.xt.pojo.Subject;
 import com.closer.xt.web.dao.SubjectMapper;
 import com.closer.xt.web.domain.SubjectDomain;
+import com.closer.xt.web.model.SubjectModel;
 import com.closer.xt.web.model.enums.Status;
 import com.closer.xt.web.model.params.SubjectParams;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -26,5 +27,9 @@ public class SubjectDomainRepository {
         queryWrapper.eq(Subject::getStatus, Status.NORMAL.getCode());
         List<Subject> subjectList = this.subjectMapper.selectList(queryWrapper);
         return subjectList;
+    }
+
+    public List<Subject> findSubjectListByCourseId(Long courseId) {
+        return this.subjectMapper.findSubjectListByCourseId(courseId);
     }
 }

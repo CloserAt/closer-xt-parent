@@ -10,12 +10,14 @@ import com.closer.xt.web.model.NewsModel;
 import com.closer.xt.web.model.enums.TabEnum;
 import com.closer.xt.web.model.params.NewsParams;
 
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class NewsDomain {
     private NewsDomainRepository newsDomainRepository;
     private NewsParams newsParams;
@@ -26,13 +28,15 @@ public class NewsDomain {
 
     public CallResult<Object> checkNewsListParams() {
         //检查参数：1.分页参数，让pageSize=5 2.tab是否合法
-        Integer pageSize = newsParams.getPageSize();
+        int pageSize = newsParams.getPageSize();
         if (pageSize > 5) {
             pageSize = 5;
             newsParams.setPageSize(pageSize);
         }
-        Integer page = newsParams.getPage();
+
+        int page = newsParams.getPage();
         if (page <= 0) return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(), BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getMsg());
+
         Integer tab = newsParams.getTab();
         if (TabEnum.valueOfCode(tab) == null) {
             return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(), BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getMsg());
@@ -49,13 +53,12 @@ public class NewsDomain {
         List<NewsModel> newsModelsList = copyList(records);
 
         //分页模型 所有的分页都需要返回此模型--固定写法模式
-        ListPageModel<NewsModel> listPageModel = new ListPageModel();
+        ListPageModel listPageModel = new ListPageModel<>();
         listPageModel.setList(newsModelsList);
         listPageModel.setPage(page);
         listPageModel.setPageSize(pageSize);
         listPageModel.setPageCount(newsPage.getPages());
         listPageModel.setSize(newsPage.getTotal());
-
 
         return CallResult.success(listPageModel);
     }

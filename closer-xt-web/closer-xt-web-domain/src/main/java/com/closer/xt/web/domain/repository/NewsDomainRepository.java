@@ -24,6 +24,7 @@ public class NewsDomainRepository {
         return new NewsDomain(this,newsParams);
     }
 
+    //TODO bug:没查出来数据
     public Page<News> findNewsListByTab(int currentPage, int pageSize, Integer tab) {
         //实现分页查询
         Page<News> page = new Page<>(currentPage,pageSize);
@@ -32,7 +33,7 @@ public class NewsDomainRepository {
         queryWrapper.eq(News::getStatus, Status.NORMAL.getCode());
         queryWrapper.select(News::getId);
         queryWrapper.select(News::getTitle);
-        queryWrapper.select(News::getImageUrl);
+//        queryWrapper.select(News::getImageUrl);
         return newsMapper.selectPage(page, queryWrapper);
     }
 

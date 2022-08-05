@@ -2,15 +2,18 @@ package com.closer.xt.web.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.closer.xt.common.Login.UserThreadLocal;
+import com.closer.xt.common.annotation.NoAuth;
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
 import com.closer.xt.sso.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -42,11 +45,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         log.info("request method:{}",request.getMethod());
         log.info("-------------------login interceptor end-----------------------");
 
+        boolean isAuth = false;
+        if (handler instanceof HandlerMethod) {
+            //拦截的方法是controller的方法
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            isAuth = handlerMethod.hasMethodAnnotation(NoAuth.class);
+        }
+
         //1.从cookie中拿到对应得token
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            returnJson(response);//为null,说明未登录
-            return false;
+            return handlerResponse(response,isAuth);
         }
         String token = null;
         for (Cookie cookie : cookies) {
@@ -56,19 +65,27 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
         }
         if (StringUtils.isBlank(token)) {
-            returnJson(response);
-            return false;
+            return handlerResponse(response,isAuth);
         }
 
         //2.根据token去做对应得认证，通过即可拿到userID
-        Long userId = tokenService.checkToken(token);
-        if (userId == null) {
+        String userId = String.valueOf(tokenService.checkToken(token));
+        if (StringUtils.isBlank(userId)) {
+            return handlerResponse(response,isAuth);
+        }
+        UserThreadLocal.put(Long.valueOf(userId));
+        return true;
+    }
+
+    private boolean handlerResponse(HttpServletResponse response, boolean isAuth) {
+        if (isAuth) {
+            return true;
+        } else {
             returnJson(response);
             return false;
         }
-        UserThreadLocal.put(userId);
-        return true;
     }
+
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
