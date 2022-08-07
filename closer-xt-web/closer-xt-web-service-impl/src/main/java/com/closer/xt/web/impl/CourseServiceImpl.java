@@ -20,7 +20,45 @@ public class CourseServiceImpl extends AbstractService implements CourseService 
         return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
             @Override
             public CallResult<Object> doAction() {
-                return courseDomain.courseList(courseParams);
+                return courseDomain.courseList();
+            }
+        });
+    }
+
+    @Override
+    public CallResult subjectInfo(CourseParams courseParams) {
+        CourseDomain courseDomain = this.courseDomainRepository.createDomain(courseParams);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> checkParam() {
+                return courseDomain.checkSubjectInfoParam();
+            }
+
+            @Override
+            public CallResult<Object> doAction() {
+                return courseDomain.subjectInfo();
+            }
+        });
+    }
+
+    @Override
+    public CallResult courseDetail(CourseParams courseParams) {
+        CourseDomain courseDomain = this.courseDomainRepository.createDomain(courseParams);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return courseDomain.courseDetail(courseParams);
+            }
+        });
+    }
+
+    @Override
+    public CallResult myCoupon(CourseParams courseParams) {
+        CourseDomain courseDomain = this.courseDomainRepository.createDomain(courseParams);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return courseDomain.myCoupon(courseParams);
             }
         });
     }

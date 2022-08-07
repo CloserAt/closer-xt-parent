@@ -5,6 +5,7 @@ import com.closer.xt.common.constant.RedisKey;
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
 import com.closer.xt.sso.dao.data.User;
+import com.closer.xt.sso.dao.mongo.data.UserLog;
 import com.closer.xt.sso.domain.repository.LoginDomainRepository;
 import com.closer.xt.sso.model.enums.LoginType;
 import com.closer.xt.sso.model.params.LoginParams;
@@ -12,6 +13,8 @@ import com.closer.xt.sso.model.params.UserParams;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +51,8 @@ public class LoginDomain {
         }
         return CallResult.success();
     }
-
+    private User userSave;
+    private boolean isNewer;
     public CallResult<Object> wxLoginCallBack() {
         String code = loginParams.getCode();
         try {
@@ -98,6 +102,7 @@ public class LoginDomain {
                 this.loginDomainRepository.createUserDomain(new UserParams()).saveUser(user);
                 isNew = true;
             }
+
             //5.使用jwt技术生成token,需要把token存储起来
             String token = JWTUtils.createJWT(7 * 24 * 60 * 60 * 1000, user.getId(), secretKey);
             log.info("生成的token是："+token);
@@ -105,12 +110,12 @@ public class LoginDomain {
             loginDomainRepository.stringRedisTemplate.opsForValue().set(RedisKey.TOKEN + token,String.valueOf(user.getId()),7,TimeUnit.DAYS);
 
             //6.假设用户只能在一个端进行登陆，其他端再登陆直接踢下线
-//            String oldToken = loginDomainRepository.stringRedisTemplate.opsForValue().get(RedisKey.LOGIN_USER_TOKEN + user.getId());
-//            if (oldToken != null) {
-//                //说明登陆过了
-//                //在用户进行登陆验证时，需要先验证token是否合法，然后去redis查询是否存在token 不存在就代表不合法
-//                loginDomainRepository.stringRedisTemplate.delete(RedisKey.TOKEN + token);
-//            }
+            String oldToken = loginDomainRepository.stringRedisTemplate.opsForValue().get(RedisKey.LOGIN_USER_TOKEN + user.getId());
+            if (oldToken != null) {
+                //说明登陆过了
+                //在用户进行登陆验证时，需要先验证token是否合法，然后去redis查询是否存在token 不存在就代表不合法
+                loginDomainRepository.stringRedisTemplate.delete(RedisKey.TOKEN + oldToken);
+            }
             loginDomainRepository.stringRedisTemplate.opsForValue().set(RedisKey.LOGIN_USER_TOKEN + user.getId(), token);
             //7.返回给前端token,存在cookie当中，下次请求时从cookie中获取token
             HttpServletResponse response = loginParams.getResponse();
@@ -126,11 +131,31 @@ public class LoginDomain {
                 user.setLastLoginTime(System.currentTimeMillis());//可以放入日志队列中，以免影响主进程得操作
                 this.loginDomainRepository.createUserDomain(new UserParams()).updateUser(user);
             }
+            this.isNewer = isNew;
+            this.userSave = user;
             return CallResult.success();
         } catch (Exception e) {
             e.printStackTrace();
             return CallResult.fail(BusinessCodeEnum.LOGIN_WX_NOT_USER_INFO.getCode(), BusinessCodeEnum.LOGIN_WX_NOT_USER_INFO.getMsg());
         }
+    }
+
+
+
+    //记录日志
+    public void wxLoginCallBackFinishUp(CallResult<Object> callResult) {
+        UserLog userLog = new UserLog();
+        userLog.setUserId(userSave.getId());
+        userLog.setNewer(isNewer);
+        userLog.setSex(userSave.getSex());
+        userLog.setRegisterTime(userSave.getRegisterTime());
+        userLog.setLastLoginTime(userSave.getLastLoginTime());
+
+        //此处是一个同步操作，如果这里代码出现异常（例如rocketmq挂掉），会影响登陆
+        //解决方案：方法一：使用异步  方法二：使用线程池
+        this.loginDomainRepository.recordLoginUserLog(userLog);
+
+
     }
 
 //    public String buildGzhUrl() {

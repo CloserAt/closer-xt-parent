@@ -1,16 +1,22 @@
 package com.closer.xt.web.domain;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.closer.xt.common.model.CallResult;
 import com.closer.xt.common.utils.CommonUtils;
 import com.closer.xt.pojo.Subject;
+import com.closer.xt.pojo.SubjectUnit;
+import com.closer.xt.web.dao.SubjectUnitMapper;
 import com.closer.xt.web.domain.repository.SubjectDomainRepository;
 import com.closer.xt.web.model.SubjectModel;
 import com.closer.xt.web.model.params.SubjectParams;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SubjectDomain {
+
     private SubjectDomainRepository subjectDomainRepository;
     private SubjectParams subjectParams;
     public SubjectDomain(SubjectDomainRepository subjectDomainRepository, SubjectParams subjectParams) {
@@ -71,5 +77,17 @@ public class SubjectDomain {
     public List<SubjectModel> findSubjectListByCourseId(Long courseId) {
         List<Subject> subjectList = this.subjectDomainRepository.findSubjectListByCourseId(courseId);
         return copyList(subjectList);
+    }
+
+    public List<Integer> findSubjectUnit(Long subjectId) {
+        List<SubjectUnit> subjectUnitList = this.subjectDomainRepository.findSubjectUnitBySubjectId(subjectId);
+        return subjectUnitList.stream().map(SubjectUnit::getSubjectUnit).collect(Collectors.toList());
+    }
+
+    public SubjectModel findSubject(Long subjectId) {
+        Subject subject = this.subjectDomainRepository.findSubjectBySubjectId(subjectId);
+        SubjectModel subjectModel = new SubjectModel();
+        BeanUtils.copyProperties(subject,subjectModel);
+        return subjectModel;
     }
 }

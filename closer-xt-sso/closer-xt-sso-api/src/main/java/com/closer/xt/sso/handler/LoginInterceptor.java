@@ -60,7 +60,6 @@ public class  LoginInterceptor implements HandlerInterceptor {
 
         //2.根据token去做对应得认证，通过即可拿到userID
         String userId = String.valueOf(tokenService.checkToken(token));
-        log.info("userId是：" + userId);
         if (userId == null) {
             returnJson(response);
             return false;

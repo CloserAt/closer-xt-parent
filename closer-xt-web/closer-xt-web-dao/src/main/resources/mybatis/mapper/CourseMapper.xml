@@ -18,10 +18,11 @@
 
     <select id="findCourseByGrade" parameterType="string" resultMap="CourseMap">
         select * from t_course where course_status = 0
-            and id
-                in (select course_id from t_course_subject where subject_id
-                    in (select id from t_subject where subject_grade = #{subjectGrade})
-                    group by course_id
-                    )
+                                 and id in
+                                     (select course_id from t_course_subject
+                                      where subject_id in
+                                            ( select id from t_subject where subject_grade=#{subjectGrade})
+                                      group by course_id
+                                     )
     </select>
 </mapper>

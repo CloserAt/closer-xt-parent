@@ -43,10 +43,10 @@ public class LoginApi {
         CallResult callResult = loginService.wxLoginCallBack(loginParams);
         if (callResult.isSuccess()) {
             //登陆成功，重定向到course页面
-            return "redirect:http://lzxtedu.com/course";
+            return "redirect:http://www.mszlu.com/course";
         }
         //登陆失败，重定向到首页
-        return "redirect:http://lzxtedu.com";
+        return "redirect:http://www.mszlu.com";
     }
 
     //此处测试需要网络，回调得时候，微信方 是通过外网进行得访问，需要内网穿透

@@ -1,4 +1,4 @@
-package com.closer.xt.web.model;
+package com.closer.xt.common.model;
 
 import lombok.Data;
 
@@ -18,9 +18,10 @@ public class ListPageModel<T> implements Serializable {
 
     private List<T> list;
 
-    public ListPageModel<T> initNull() {
-        ListPageModel<T> listModel = new ListPageModel<>();
-        listModel.setList(new ArrayList<>());
+
+    public ListPageModel<T> initNull(){
+        ListPageModel<T> listModel = new ListPageModel<T>();
+        listModel.setList(new ArrayList<T>());
         listModel.setPage(1);
         listModel.setPageCount(1);
         listModel.setSize(0);

@@ -5,7 +5,7 @@ import java.util.List;
 
 @Data
 public class SubjectModel {
-    private Long code;
+    private Long id;
     private String subjectGrade;
     private String subjectName;
     private String subjectTerm;

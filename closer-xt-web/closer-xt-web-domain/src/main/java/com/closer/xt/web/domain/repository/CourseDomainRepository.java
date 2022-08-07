@@ -1,17 +1,20 @@
 package com.closer.xt.web.domain.repository;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.closer.xt.pojo.Course;
+import com.closer.xt.pojo.CourseSubject;
 import com.closer.xt.web.dao.CourseMapper;
-import com.closer.xt.web.domain.CourseDomain;
-import com.closer.xt.web.domain.SubjectDomain;
-import com.closer.xt.web.domain.UserCourseDomain;
-import com.closer.xt.web.model.params.CourseParams;
-import com.closer.xt.web.model.params.SubjectParams;
-import com.closer.xt.web.model.params.UserCourseParams;
+import com.closer.xt.web.dao.CourseSubjectMapper;
+import com.closer.xt.web.domain.*;
+import com.closer.xt.web.model.params.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CourseDomainRepository {
@@ -19,10 +22,20 @@ public class CourseDomainRepository {
     private CourseMapper courseMapper;
 
     @Autowired
+    private CourseSubjectMapper courseSubjectMapper;
+
+    @Autowired
     private UserCourseDomainRepository userCourseDomainRepository;
 
     @Autowired
     private SubjectDomainRepository subjectDomainRepository;
+
+    @Autowired
+    private UserHistoryDomainRepository userHistoryDomainRepository;
+
+    @Autowired
+    private CouponDomainRepository couponDomainRepository;
+
 
     public CourseDomain createDomain(CourseParams courseParams) {
         return new CourseDomain(this,courseParams);
@@ -52,4 +65,24 @@ public class CourseDomainRepository {
     public SubjectDomain createSubjectDomain(SubjectParams subjectParams) {
         return this.subjectDomainRepository.createDomain(subjectParams);
     }
+
+    public Course findCourseById(Long courseId) {
+        return this.courseMapper.selectById(courseId);
+    }
+
+    public UserHistoryDomain createUserHistoryDomain(UserHistoryParams userHistoryParams) {
+        return this.userHistoryDomainRepository.createDomain(userHistoryParams);
+    }
+
+    public List<Long> findCourseIdListBySubject(Long subjectId) {
+        LambdaQueryWrapper<CourseSubject> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(CourseSubject::getSubjectId,subjectId);
+        List<CourseSubject> list = this.courseSubjectMapper.selectList(queryWrapper);
+        return list.stream().map(CourseSubject::getCourseId).collect(Collectors.toList());
+    }
+
+    public CouponDomain createCouponDomain(CouponParams couponParams) {
+        return this.couponDomainRepository.creatDomain(couponParams);
+    }
+
 }

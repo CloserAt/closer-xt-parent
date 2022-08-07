@@ -10,7 +10,6 @@
     </resultMap>
 
     <select id="findSubjectListByCourseId" parameterType="long" resultMap="SubjectMap">
-        select * from t_subject where id
-            in (select subject_id from t_course_subject where course_id=#{courseId})
+        select * from t_subject where id in (SELECT subject_id FROM `t_course_subject` where course_id=#{courseId})
     </select>
 </mapper>

@@ -5,7 +5,7 @@ import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
 import com.closer.xt.pojo.News;
 import com.closer.xt.web.domain.repository.NewsDomainRepository;
-import com.closer.xt.web.model.ListPageModel;
+import com.closer.xt.common.model.ListPageModel;
 import com.closer.xt.web.model.NewsModel;
 import com.closer.xt.web.model.enums.TabEnum;
 import com.closer.xt.web.model.params.NewsParams;

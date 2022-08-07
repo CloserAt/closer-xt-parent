@@ -12,7 +12,7 @@ public @interface Cache {
      * 过期时间 默认60s
      * @return
      */
-    long time() default 1 * 60 * 1000;
+    int time() default 1 * 60 * 1000;
 
     /**
      * 缓存前缀名称

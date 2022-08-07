@@ -19,10 +19,23 @@ public class CourseAPI {
 
     @PostMapping("courseList")
     @NoAuth
-    @Cache(name = "web_courseList",time = 5*60*1000,hasUser = true)
+    //@Cache(name = "web_courseList",time = 5*60*1000,hasUser = true)
     public CallResult courseList(@RequestBody CourseParams courseParams) {
-        return CallResult.success(courseService.courseList(courseParams));
+        return courseService.courseList(courseParams);
     }
 
+    @PostMapping("subjectInfo")
+    public CallResult subjectInfo(@RequestBody CourseParams courseParams) {
+        return courseService.subjectInfo(courseParams);
+    }
 
+    @PostMapping("courseDetail")
+    public CallResult courseDetail(@RequestBody CourseParams courseParams) {
+        return courseService.courseDetail(courseParams);
+    }
+
+    @PostMapping("myCoupon")
+    public CallResult myCoupon(@RequestBody CourseParams courseParams) {
+        return courseService.myCoupon(courseParams);
+    }
 }

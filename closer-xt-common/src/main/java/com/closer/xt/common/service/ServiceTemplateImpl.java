@@ -89,6 +89,10 @@ public class ServiceTemplateImpl implements ServiceTemplate{
         }catch(Exception e){
             e.printStackTrace();
             log.error("executeQuery error", e);
+            //是否每次都要查看error.log才能发现代码问题？
+            //此处需要主动发现错误日志
+            //方法是：一旦出现error,发短信或者发邮件通知开发人员
+            //要求：效率，因为短信或邮件比较慢，而error日志在生产环境比较频繁，影响程序性能
             return CallResult.fail();
         }
     }

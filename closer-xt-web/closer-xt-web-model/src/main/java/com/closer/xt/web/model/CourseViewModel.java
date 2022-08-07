@@ -24,4 +24,12 @@ public class CourseViewModel {
 
     //用户名称
     private String userName;
+
+    public SubjectModel getSubjectInfo() {
+        return subjectInfo;
+    }
+
+    public void setSubjectInfo(SubjectModel subjectInfo) {
+        this.subjectInfo = subjectInfo;
+    }
 }

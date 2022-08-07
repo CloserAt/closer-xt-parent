@@ -54,6 +54,12 @@ public class LoginServiceImpl extends AbstractService implements LoginService {
                 //写业务逻辑的，交给domain
                 return loginDomain.wxLoginCallBack();
             }
+
+            @Override
+            public void finishUp(CallResult<Object> callResult) {
+                //此处是记录日志的，且不能影响登陆操作，但是现在要是rocketmq突然挂掉，会影响到登陆，因此，需要改造这里的代码
+                loginDomain.wxLoginCallBackFinishUp(callResult);
+            }
         });
     }
 

@@ -74,6 +74,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return handlerResponse(response,isAuth);
         }
         UserThreadLocal.put(Long.valueOf(userId));
+        log.info("用户1：" + UserThreadLocal.get());
         return true;
     }
 
@@ -89,6 +90,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        log.info("调用了remove方法");
         UserThreadLocal.remove();
     }
 

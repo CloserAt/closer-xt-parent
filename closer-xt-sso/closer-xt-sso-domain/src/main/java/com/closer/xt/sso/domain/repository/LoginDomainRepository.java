@@ -7,15 +7,20 @@ import com.closer.xt.common.constant.RedisKey;
 import com.closer.xt.common.wexin.config.WxOpenConfig;
 import com.closer.xt.sso.dao.UserMapper;
 import com.closer.xt.sso.dao.data.User;
+import com.closer.xt.sso.dao.mongo.data.UserLog;
 import com.closer.xt.sso.domain.LoginDomain;
 import com.closer.xt.sso.domain.UserDomain;
+import com.closer.xt.sso.domain.thread.LogThread;
 import com.closer.xt.sso.model.params.LoginParams;
 import com.closer.xt.sso.model.params.UserParams;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.mp.api.WxMpService;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -69,6 +74,19 @@ public class LoginDomainRepository {
 
     public UserDomain createUserDomain(UserParams userParams) {
         return userDomainRepository.createDomain(userParams);
+    }
+
+    //注入线程池
+    @Autowired
+    private LogThread logThread;
+
+    public void recordLoginUserLog(UserLog userLog) {
+        //同步发送，同时发送的消息，会自动转为json字符串
+
+        //异步发送：asyncSend() ;此处不采用异步方式，因为虽然其性能高，但是存在丢数据的问题，但是我们不希望丢数据
+        //采用同步，利用线程池
+        log.info("记录日志开始时间{}",new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+        logThread.recordLog(userLog);
     }
 
 //    public String buildGzhUrl() {

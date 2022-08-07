@@ -1,8 +1,11 @@
 package com.closer.xt.web.domain.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.closer.xt.pojo.Subject;
+import com.closer.xt.pojo.SubjectUnit;
 import com.closer.xt.web.dao.SubjectMapper;
+import com.closer.xt.web.dao.SubjectUnitMapper;
 import com.closer.xt.web.domain.SubjectDomain;
 import com.closer.xt.web.model.SubjectModel;
 import com.closer.xt.web.model.enums.Status;
@@ -18,6 +21,9 @@ public class SubjectDomainRepository {
     @Autowired
     private SubjectMapper subjectMapper;
 
+    @Autowired
+    private SubjectUnitMapper subjectUnitMapper;
+
     public SubjectDomain createDomain(SubjectParams subjectParams) {
         return new SubjectDomain(this, subjectParams);
     }
@@ -31,5 +37,15 @@ public class SubjectDomainRepository {
 
     public List<Subject> findSubjectListByCourseId(Long courseId) {
         return this.subjectMapper.findSubjectListByCourseId(courseId);
+    }
+
+    public List<SubjectUnit> findSubjectUnitBySubjectId(Long subjectId) {
+        LambdaQueryWrapper<SubjectUnit> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SubjectUnit::getSubjectId,subjectId);
+        return this.subjectUnitMapper.selectList(queryWrapper);
+    }
+
+    public Subject findSubjectBySubjectId(Long subjectId) {
+        return subjectMapper.selectById(subjectId);
     }
 }
