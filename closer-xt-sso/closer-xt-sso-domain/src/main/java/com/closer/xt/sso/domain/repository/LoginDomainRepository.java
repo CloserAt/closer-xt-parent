@@ -10,6 +10,7 @@ import com.closer.xt.sso.dao.data.User;
 import com.closer.xt.sso.dao.mongo.data.UserLog;
 import com.closer.xt.sso.domain.LoginDomain;
 import com.closer.xt.sso.domain.UserDomain;
+import com.closer.xt.sso.domain.thread.InviteThread;
 import com.closer.xt.sso.domain.thread.LogThread;
 import com.closer.xt.sso.model.params.LoginParams;
 import com.closer.xt.sso.model.params.UserParams;
@@ -29,6 +30,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Slf4j
 public class LoginDomainRepository {
+    @Autowired
+    public InviteThread inviteThread;
+
     @Autowired
     public WxMpService wxMpService;
 

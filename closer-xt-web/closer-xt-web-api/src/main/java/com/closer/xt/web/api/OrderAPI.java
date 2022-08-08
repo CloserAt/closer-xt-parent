@@ -39,4 +39,14 @@ public class OrderAPI {
         }
         return WxPayNotifyResponse.fail("失败");
     }
+
+    @PostMapping("findOrder")
+    public CallResult findOrder(@RequestBody OrderParams orderParams) {
+        return orderService.findOrder(orderParams);
+    }
+
+    @PostMapping("orderList")
+    public CallResult orderList(@RequestBody OrderParams orderParams) {
+        return orderService.orderList(orderParams);
+    }
 }

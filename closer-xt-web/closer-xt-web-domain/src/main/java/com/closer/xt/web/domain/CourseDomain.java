@@ -246,4 +246,23 @@ public class CourseDomain {
     public Course findCourseByCourseId(Long courseId) {
         return this.courseDomainRepository.findCourseById(courseId);
     }
+
+    public CourseViewModel findCourseViewModel(Long courseId) {
+        Course course = this.courseDomainRepository.findCourseById(courseId);
+        return copyViewModel(course);
+    }
+
+    private CourseViewModel copyViewModel(Course course) {
+        CourseViewModel courseViewModel = new CourseViewModel();
+        courseViewModel.setId(course.getId());
+        courseViewModel.setCourseDesc(course.getCourseDesc());
+        courseViewModel.setCourseName(course.getCourseName());
+        courseViewModel.setCoursePrice(course.getCoursePrice());
+        courseViewModel.setCourseZhePrice(course.getCourseZhePrice());
+        courseViewModel.setOrderTime(course.getOrderTime());
+        courseViewModel.setImageUrl(course.getImageUrl());
+        List<SubjectModel> subjectModelList = courseDomainRepository.createSubjectDomain(null).findSubjectListByCourseId(course.getId());
+        courseViewModel.setSubjectList(subjectModelList);
+        return courseViewModel;
+    }
 }

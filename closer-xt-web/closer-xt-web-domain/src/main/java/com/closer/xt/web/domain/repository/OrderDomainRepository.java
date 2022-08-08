@@ -3,6 +3,7 @@ package com.closer.xt.web.domain.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.closer.xt.common.wexin.config.WxPayConfiguration;
 import com.closer.xt.pojo.Coupon;
 import com.closer.xt.pojo.Course;
@@ -125,5 +126,14 @@ public class OrderDomainRepository {
 
     public UserCourseDomain createUserCourseDomain(UserCourseParams userCourseParams) {
         return this.userCourseDomainRepository.createDomain(userCourseParams);
+    }
+
+    public Page<Order> orderList(int status, int page, int pageSize, Long userId) {
+        LambdaQueryWrapper<Order> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Order::getUserId,userId);
+        queryWrapper.ne(Order::getOrderStatus,status);
+        Page<Order> orderPage = new Page<>(page,pageSize);
+        return this.orderMapper.selectPage(orderPage,queryWrapper);
+
     }
 }

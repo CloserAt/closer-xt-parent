@@ -1,14 +1,18 @@
 package com.closer.xt.web.domain;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.closer.xt.common.Login.UserThreadLocal;
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
+import com.closer.xt.common.model.ListPageModel;
 import com.closer.xt.common.utils.CommonUtils;
 import com.closer.xt.pojo.*;
 import com.closer.xt.web.domain.pay.WxPayDomain;
 import com.closer.xt.web.domain.repository.OrderDomainRepository;
+import com.closer.xt.web.model.CourseViewModel;
 import com.closer.xt.web.model.OrderDisplayModel;
+import com.closer.xt.web.model.OrderViewModel;
 import com.closer.xt.web.model.SubjectModel;
 import com.closer.xt.web.model.enums.OrderStatus;
 import com.closer.xt.web.model.enums.PayStatus;
@@ -22,8 +26,11 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,5 +280,72 @@ public class OrderDomain {
             return CallResult.fail(BusinessCodeEnum.PAY_ORDER_CREATE_FAIL.getCode(),"微信支付信息处理失败");
         }
         return CallResult.fail();
+    }
+
+    public CallResult<Object> findOrder(OrderParams orderParams) {
+        String orderId = orderParams.getOrderId();
+        if (StringUtils.isEmpty(orderId)) {
+            return CallResult.fail(BusinessCodeEnum.ORDER_NOT_EXIST.getCode(),"订单不存在");
+        }
+        Order order = this.orderDomainRepository.findOrderByOrderId(orderId);
+        if (order == null) {
+            return CallResult.fail(BusinessCodeEnum.ORDER_NOT_EXIST.getCode(),"订单不存在");
+        }
+        OrderViewModel orderViewModel = new OrderViewModel();
+        CourseViewModel courseViewModel = this.orderDomainRepository.createCourseDomain(null).findCourseViewModel(order.getCourseId());
+        orderViewModel.setCourse(courseViewModel);
+        orderViewModel.setOAmount(order.getOrderAmount());
+        orderViewModel.setOrderStatus(order.getOrderStatus());
+        orderViewModel.setPayStatus(order.getPayStatus());
+        orderViewModel.setPayType(order.getPayType());
+        orderViewModel.setCreateTime(new DateTime(order.getCreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+        orderViewModel.setExpireTime(new DateTime(order.getCreateTime() + order.getExpireTime()*24*60*60*1000).toString("yyyy-MM-dd HH:mm:ss"));
+        Long couponId = order.getCouponId();
+        if (couponId <= 0) {
+            //优惠券没了
+            orderViewModel.setCouponAmount(new BigDecimal(0));
+        } else {
+            Coupon coupon = this.orderDomainRepository.createCouponDomain(null).findCouponByCouponId(couponId);
+            BigDecimal price = coupon.getPrice();
+            orderViewModel.setCouponAmount(price);
+        }
+        return CallResult.success(orderViewModel);
+    }
+
+    public CallResult<Object> orderList(OrderParams orderParams) {
+        int page = this.orderParams.getPage();
+        int pageSize = this.orderParams.getPageSize();
+        Long userId = UserThreadLocal.get();
+        Page<Order> orderPage = this.orderDomainRepository.orderList(page,pageSize,OrderStatus.CANCEL.getCode(),userId);
+        String orderId = orderParams.getOrderId();
+        List<OrderViewModel> orderViewModelList = new ArrayList<>();
+        for (Order orderPageRecord : orderPage.getRecords()) {
+            OrderViewModel orderViewModel = new OrderViewModel();
+            orderViewModel.setOrderId(orderPageRecord.getOrderId());
+            CourseViewModel courseViewModel = this.orderDomainRepository.createCourseDomain(null).findCourseViewModel(orderPageRecord.getCourseId());
+            orderViewModel.setCourse(courseViewModel);
+            orderViewModel.setOAmount(orderPageRecord.getOrderAmount());
+            orderViewModel.setOrderStatus(orderPageRecord.getOrderStatus());
+            orderViewModel.setPayStatus(orderPageRecord.getPayStatus());
+            orderViewModel.setPayType(orderPageRecord.getPayType());
+            orderViewModel.setCreateTime(new DateTime(orderPageRecord.getCreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            orderViewModel.setExpireTime(new DateTime(orderPageRecord.getCreateTime() + orderPageRecord.getExpireTime()*24*60*60*1000).toString("yyyy-MM-dd HH:mm:ss"));
+            Long couponId = orderPageRecord.getCouponId();
+            if (couponId <= 0){
+                orderViewModel.setCouponAmount(new BigDecimal(0));
+            }else{
+                Coupon coupon = this.orderDomainRepository.createCouponDomain(null).findCouponByCouponId(couponId);
+                BigDecimal price = coupon.getPrice();
+                orderViewModel.setCouponAmount(price);
+            }
+            orderViewModelList.add(orderViewModel);
+        }
+        ListPageModel listPageModel = new ListPageModel();
+        int total = (int) orderPage.getTotal();
+        listPageModel.setSize(total);
+        listPageModel.setPageCount(orderPage.getPages());
+        listPageModel.setPage(page);
+        listPageModel.setList(orderViewModelList);
+        return CallResult.success(listPageModel);
     }
 }

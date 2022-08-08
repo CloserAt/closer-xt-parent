@@ -50,4 +50,26 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
             }
         });
     }
+
+    @Override
+    public CallResult findOrder(OrderParams orderParams) {
+        OrderDomain orderDomain = this.orderDomainRepository.createDomain(null);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return orderDomain.findOrder(orderParams);
+            }
+        });
+    }
+
+    @Override
+    public CallResult orderList(OrderParams orderParams) {
+        OrderDomain orderDomain = this.orderDomainRepository.createDomain(null);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return orderDomain.orderList(orderParams);
+            }
+        });
+    }
 }

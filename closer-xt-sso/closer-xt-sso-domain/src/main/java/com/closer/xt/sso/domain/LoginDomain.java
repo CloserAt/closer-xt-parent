@@ -7,6 +7,7 @@ import com.closer.xt.common.model.CallResult;
 import com.closer.xt.sso.dao.data.User;
 import com.closer.xt.sso.dao.mongo.data.UserLog;
 import com.closer.xt.sso.domain.repository.LoginDomainRepository;
+import com.closer.xt.sso.domain.thread.InviteThread;
 import com.closer.xt.sso.model.enums.LoginType;
 import com.closer.xt.sso.model.params.LoginParams;
 import com.closer.xt.sso.model.params.UserParams;
@@ -17,7 +18,12 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 /*
 专门处理和登陆相关得操作
@@ -101,6 +107,10 @@ public class LoginDomain {
                 user.setSchool("");
                 this.loginDomainRepository.createUserDomain(new UserParams()).saveUser(user);
                 isNew = true;
+
+                //新用户
+                //查看是否有邀请信息
+                fillInvite(user);
             }
 
             //5.使用jwt技术生成token,需要把token存储起来
@@ -140,6 +150,28 @@ public class LoginDomain {
         }
     }
 
+    //检查是否有邀请信息
+    private void fillInvite(User user) {
+        //个人链接可能有多个，此处用list
+        HttpServletRequest request = this.loginParams.getRequest();
+        Cookie[] cookies = request.getCookies();
+        List<Map<String,String>> inviteMapList = new ArrayList<>();
+        for (Cookie cookie : cookies) {
+            String name = cookie.getName();
+            String[] str = name.split("_i_ga_b_");
+            if (2 == str.length) {
+                String billType = str[0];
+                Map<String,String> map = new HashMap<>();
+                map.put("billType",billType);
+                map.put("userId",cookie.getValue());
+                inviteMapList.add(map);
+            }
+        }
+
+        //由于邀请是非必要的，不能影响登陆逻辑，所以此处是可以拆分的
+        //拆分业务逻辑的方法：1.mq,把它当成消息发送出去  2.线程池
+        this.loginDomainRepository.inviteThread.fillInvite(inviteMapList,user);
+    }
 
 
     //记录日志

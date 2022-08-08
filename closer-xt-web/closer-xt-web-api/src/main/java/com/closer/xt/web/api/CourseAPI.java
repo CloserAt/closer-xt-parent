@@ -19,6 +19,7 @@ public class CourseAPI {
 
     @PostMapping("courseList")
     @NoAuth
+    //此处缓存有些问题，需要：当订单完成支付，发一个消息到队列，队列接受到之后，把这里的缓存更新一下
     //@Cache(name = "web_courseList",time = 5*60*1000,hasUser = true)
     public CallResult courseList(@RequestBody CourseParams courseParams) {
         return courseService.courseList(courseParams);
