@@ -64,4 +64,10 @@ public class UserCourseDomainRepository {
         queryWrapper.last("limit 1");
         return userCourseMapper.selectOne(queryWrapper);
     }
+
+    public List<UserCourse> findUserCourseList(Long userId) {
+        LambdaQueryWrapper<UserCourse> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(UserCourse::getUserId,userId);
+        return this.userCourseMapper.selectList(queryWrapper);
+    }
 }

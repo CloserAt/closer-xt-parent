@@ -6,6 +6,8 @@ import com.closer.xt.common.Login.UserThreadLocal;
 import com.closer.xt.common.model.BusinessCodeEnum;
 import com.closer.xt.common.model.CallResult;
 import com.closer.xt.common.model.ListPageModel;
+import com.closer.xt.common.model.enums.InviteType;
+import com.closer.xt.common.utils.AESUtils;
 import com.closer.xt.common.utils.CommonUtils;
 import com.closer.xt.pojo.*;
 import com.closer.xt.web.domain.pay.WxPayDomain;
@@ -29,6 +31,8 @@ import me.chanjar.weixin.common.api.WxConsts;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,7 +114,50 @@ public class OrderDomain {
         //在消费方进行消费的时候，订单是否要取消 多长满足取消 以 time为准 s
         map.put("time","1800");
         this.orderDomainRepository.mqService.sendDelayedMessage("create_order_delay",map,16);//测试时传入3，上线时传16
+
+        //添加邀请信息的判断
+        fillInvite(userId,order);
+
         return CallResult.success(orderDisplayModel);
+    }
+
+    private void fillInvite(Long userId, Order order) {
+        //个人链接可能有多个，此处用list
+        HttpServletRequest request = this.orderParams.getRequest();
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return;
+        List<Map<String,String>> billTypeList = new ArrayList<>();
+        for (Cookie cookie : cookies) {
+            String name = cookie.getName();
+            String[] str = name.split("_i_ga_b_");
+            if (2 == str.length) {
+                String billType = str[0];
+                Map<String,String> map = new HashMap<>();
+                map.put("billType",billType);
+                map.put("userId",cookie.getValue());
+                billTypeList.add(map);
+            }
+        }
+
+        //由于邀请是非必要的，不能影响登陆逻辑，所以此处是可以拆分的
+        //拆分业务逻辑的方法：1.mq,把它当成消息发送出去  2.线程池
+        //放入线程池执行
+        this.orderDomainRepository.orderThread.fillInvite(billTypeList, order, userId);
+
+        //或者直接在此处写
+//        for (Map<String, String> inviteMap : billTypeList) {
+//            //有推荐信息，构建邀请信息
+//            Invite invite = new Invite();
+//            invite.setInviteInfo(order.getOrderId());
+//            invite.setInviteStatus(0);
+//            invite.setInviteTime(System.currentTimeMillis());
+//            invite.setInviteType(InviteType.LOGIN.getCode());
+//            invite.setInviteUserId(userId);
+//            invite.setUserId(Long.parseLong(AESUtils.decrypt(inviteMap.get("userId"))));
+//            invite.setBillType(inviteMap.get("billType"));
+//            invite.setCreateTime(System.currentTimeMillis());
+//            this.orderDomainRepository.createInviteDomain(null).save(invite);
+//        }
     }
 
     /**

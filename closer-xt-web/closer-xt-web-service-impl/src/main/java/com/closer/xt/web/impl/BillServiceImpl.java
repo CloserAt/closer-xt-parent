@@ -7,7 +7,9 @@ import com.closer.xt.web.domain.repository.BillDomainRepository;
 import com.closer.xt.web.model.params.BillParams;
 import com.closer.xt.web.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BillServiceImpl extends AbstractService implements BillService {
     @Autowired
     private BillDomainRepository billDomainRepository;

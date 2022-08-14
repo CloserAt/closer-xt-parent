@@ -2,8 +2,8 @@ package com.closer.xt.admin.domain.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.closer.xt.admin.dao.data.CourseMapper;
-import com.closer.xt.admin.dao.data.CourseSubjectMapper;
+import com.closer.xt.admin.dao.CourseMapper;
+import com.closer.xt.admin.dao.CourseSubjectMapper;
 import com.closer.xt.admin.domain.CourseDomain;
 import com.closer.xt.admin.domain.SubjectDomain;
 import com.closer.xt.admin.params.CourseParams;
@@ -11,7 +11,6 @@ import com.closer.xt.admin.params.SubjectParams;
 import com.closer.xt.pojo.Course;
 import com.closer.xt.pojo.CourseSubject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -265,4 +265,36 @@ public class CourseDomain {
         courseViewModel.setSubjectList(subjectModelList);
         return courseViewModel;
     }
+
+    public CallResult<Object> myCourse() {
+        Long userId = UserThreadLocal.get();
+        List<UserCourse> userCourseList = this.courseDomainRepository.createUserCourseDomain(null).findUserCourseList(userId);
+        List<UserCourseModel> userCourseModelList = new ArrayList<>();
+        long currentTimeMillis = System.currentTimeMillis();
+        for (UserCourse userCourse : userCourseList) {
+            UserCourseModel userCourseModel = new UserCourseModel();
+            userCourseModel.setCourseId(userCourse.getCourseId());
+            Course course = this.courseDomainRepository.findCourseById(userCourse.getCourseId());
+            userCourseModel.setCourseName(course.getCourseName());
+            if (currentTimeMillis > userCourse.getExpireTime()) {
+                userCourseModel.setStatus(2);
+            } else {
+                userCourseModel.setStatus(1);
+            }
+            userCourseModel.setExpireTime(new DateTime(userCourse.getExpireTime()).toString("yyyy年MM月dd日"));
+            userCourseModel.setBuyTime(new DateTime(userCourse.getCreateTime()).toString("yyyy年MM月dd日"));
+            List<SubjectModel> subjectInfoByCourseId = this.courseDomainRepository.createSubjectDomain(new SubjectParams()).findSubjectListByCourseId(userCourse.getCourseId());
+
+            Integer count = this.courseDomainRepository.createUserHistoryDomain(null).countUserHistoryBySubjectList(userId,subjectInfoByCourseId);
+            userCourseModel.setStudyCount(count);
+
+            userCourseModel.setCourseId(course.getId());
+            userCourseModelList.add(userCourseModel);
+        }
+        return CallResult.success(userCourseModelList);
+    }
+
+    public List<Long> findCourseIdListBySubjectId(Long subjectId) {
+        return this.courseDomainRepository.findCourseIdListBySubject(subjectId);
+    }
 }

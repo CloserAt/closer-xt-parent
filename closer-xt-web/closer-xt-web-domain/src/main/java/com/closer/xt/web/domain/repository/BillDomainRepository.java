@@ -9,9 +9,10 @@ import com.closer.xt.web.model.enums.DeleteStatus;
 import com.closer.xt.web.model.params.BillParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Component
 public class BillDomainRepository {
     @Value("${invite.url}")
     public String inviteUrl;

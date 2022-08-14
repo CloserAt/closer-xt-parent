@@ -25,11 +25,21 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/plugins/**").permitAll()
+                //权限校验，即符合以下接口路径规则的，进行权限校验
+                .antMatchers(
+                        "/course/**",
+                        "/news/**",
+                        "/subject/**",
+                        "/topic/**",
+                        "/order/**",
+                        "/user/menu/userMenuList",
+                        "/xt/**").access("@authService.auth(request,authentication)")
+
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("/pages/main.html")
+                .defaultSuccessUrl("/pages/main.ftl")
                 .permitAll()
                 .and().logout()
                 .and().csrf().disable()

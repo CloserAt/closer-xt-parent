@@ -24,4 +24,18 @@ public interface TopicService {
      * @return
      */
     CallResult jump(TopicParams topicParams);
+
+    /**
+     * 我的学习
+     * @param topicParams
+     * @return
+     */
+    CallResult practiceHistory(TopicParams topicParams);
+
+    /**
+     * 错题本
+     * @param topicParams
+     * @return
+     */
+    CallResult userProblemSearch(TopicParams topicParams);
 }

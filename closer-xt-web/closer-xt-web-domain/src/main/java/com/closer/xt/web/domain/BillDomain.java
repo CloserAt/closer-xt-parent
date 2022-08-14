@@ -2,6 +2,7 @@ package com.closer.xt.web.domain;
 
 import com.closer.xt.common.Login.UserThreadLocal;
 import com.closer.xt.common.model.CallResult;
+import com.closer.xt.common.utils.AESUtils;
 import com.closer.xt.pojo.Bill;
 import com.closer.xt.web.domain.repository.BillDomainRepository;
 import com.closer.xt.web.model.BillModel;

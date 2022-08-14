@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+
 @Slf4j
 @RestController
 @RequestMapping("order")
@@ -20,7 +23,9 @@ public class OrderAPI {
     private OrderService orderService;
 
     @PostMapping("submitOrder")
-    public CallResult submitOrder(@RequestBody OrderParams orderParams) {
+    public CallResult submitOrder(HttpServletRequest request,
+                                  @RequestBody OrderParams orderParams) {
+        orderParams.setRequest(request);
         return orderService.submit(orderParams);
     }
 

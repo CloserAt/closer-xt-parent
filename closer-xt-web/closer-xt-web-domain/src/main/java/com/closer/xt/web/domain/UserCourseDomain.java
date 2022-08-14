@@ -1,5 +1,6 @@
 package com.closer.xt.web.domain;
 
+import com.closer.xt.pojo.Course;
 import com.closer.xt.pojo.Order;
 import com.closer.xt.pojo.UserCourse;
 import com.closer.xt.web.domain.repository.UserCourseDomainRepository;
@@ -49,5 +50,9 @@ public class UserCourseDomain {
             userCourse.setExpireTime(expireTime + order.getExpireTime() * 24 * 60 * 60 * 1000L);
             this.userCourseDomainRepository.updateUserCourse(userCourse);
         }
+    }
+
+    public List<UserCourse> findUserCourseList(Long userId) {
+        return userCourseDomainRepository.findUserCourseList(userId);
     }
 }

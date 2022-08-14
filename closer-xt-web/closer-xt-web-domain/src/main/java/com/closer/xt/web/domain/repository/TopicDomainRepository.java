@@ -92,4 +92,8 @@ public class TopicDomainRepository {
     public UserProblemDomain createUserProblem(UserProblemParams userProblemParams) {
         return userProblemDomainRepository.createDomain(userProblemParams);
     }
+
+    public Topic findTopicById(Long topicId) {
+        return this.topicMapper.selectById(topicId);
+    }
 }

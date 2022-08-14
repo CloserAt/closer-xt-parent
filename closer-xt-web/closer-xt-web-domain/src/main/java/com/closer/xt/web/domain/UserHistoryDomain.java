@@ -1,8 +1,12 @@
 package com.closer.xt.web.domain;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.closer.xt.pojo.UserHistory;
 import com.closer.xt.web.domain.repository.UserHistoryDomainRepository;
+import com.closer.xt.web.model.SubjectModel;
 import com.closer.xt.web.model.params.UserHistoryParams;
+
+import java.util.List;
 
 public class UserHistoryDomain {
     private UserHistoryDomainRepository userHistoryDomainRepository;
@@ -26,5 +30,13 @@ public class UserHistoryDomain {
 
     public void updateUserHistoryStatus(Long historyId, int code, long currentTimeMillis) {
         this.userHistoryDomainRepository.updateUserHistoryStatus(historyId,code,currentTimeMillis);
+    }
+
+    public Integer countUserHistoryBySubjectList(Long userId, List<SubjectModel> subjectInfoByCourseId) {
+        return userHistoryDomainRepository.countUserHistoryBySubjectList(userId,subjectInfoByCourseId);
+    }
+
+    public Page<UserHistory> findUserHistoryList(Long userId, Integer page, Integer pageSize) {
+        return userHistoryDomainRepository.findUserHistoryList(userId,page,pageSize);
     }
 }

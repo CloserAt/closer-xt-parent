@@ -84,5 +84,4 @@ public class CourseDomainRepository {
     public CouponDomain createCouponDomain(CouponParams couponParams) {
         return this.couponDomainRepository.creatDomain(couponParams);
     }
-
 }

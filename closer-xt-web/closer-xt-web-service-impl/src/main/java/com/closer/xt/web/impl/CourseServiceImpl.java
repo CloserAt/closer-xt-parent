@@ -62,4 +62,15 @@ public class CourseServiceImpl extends AbstractService implements CourseService 
             }
         });
     }
+
+    @Override
+    public CallResult myCourse() {
+        CourseDomain courseDomain = this.courseDomainRepository.createDomain(new CourseParams());
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return courseDomain.myCourse();
+            }
+        });
+    }
 }

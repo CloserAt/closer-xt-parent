@@ -39,4 +39,9 @@ public class CourseAPI {
     public CallResult myCoupon(@RequestBody CourseParams courseParams) {
         return courseService.myCoupon(courseParams);
     }
+
+    @PostMapping("myCourse")
+    public CallResult myCourse() {
+        return courseService.myCourse();
+    }
 }

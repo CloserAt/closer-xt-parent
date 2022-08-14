@@ -13,6 +13,7 @@ import com.closer.xt.web.dao.OrderMapper;
 import com.closer.xt.web.dao.OrderTradeMapper;
 import com.closer.xt.web.domain.*;
 import com.closer.xt.web.domain.mq.MqService;
+import com.closer.xt.web.domain.thread.orderThread;
 import com.closer.xt.web.model.SubjectModel;
 import com.closer.xt.web.model.params.*;
 import org.aspectj.weaver.ast.Or;
@@ -23,6 +24,9 @@ import javax.annotation.Resource;
 import java.util.List;
 @Component
 public class OrderDomainRepository {
+    @Autowired
+    public orderThread orderThread;
+
     @Autowired
     public MqService mqService;
 
@@ -46,6 +50,9 @@ public class OrderDomainRepository {
 
     @Autowired
     private UserCourseDomainRepository userCourseDomainRepository;
+
+    @Autowired
+    private InviteDomainRepository inviteDomainRepository;
 
     public OrderDomain createDomain(OrderParams orderParams) {
         return new OrderDomain(this,orderParams);
@@ -135,5 +142,9 @@ public class OrderDomainRepository {
         Page<Order> orderPage = new Page<>(page,pageSize);
         return this.orderMapper.selectPage(orderPage,queryWrapper);
 
+    }
+
+    public InviteDomain createInviteDomain(InviteParams inviteParams) {
+        return inviteDomainRepository.createDomain(inviteParams);
     }
 }
